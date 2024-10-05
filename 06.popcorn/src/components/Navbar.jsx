@@ -8,17 +8,21 @@ export function Logo() {
         </div>
     );
 }
-export function SearchBox() {
-    const [query, setQuery] = useState("");
-    return (
-        <input
-            className="search"
-            type="text"
-            placeholder="Search movies..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-        />
-    );
+export function SearchBox({ query = "", onSerach = () => {} }) {
+    // const [query, setQuery] = useState("");
+    try {
+        return (
+            <input
+                className="search"
+                type="text"
+                placeholder="Search movies..."
+                value={query}
+                onChange={(e) => onSerach(e.target.value)}
+            />
+        );
+    } catch (err) {
+        console.log(err);
+    }
 }
 export function NumResult({ movies }) {
     return (
