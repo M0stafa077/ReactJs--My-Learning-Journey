@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PropTypes, { string } from "prop-types";
+import PropTypes from "prop-types";
 
 const containerStyle = {
     display: "flex",
@@ -26,12 +26,12 @@ export default function StarRating({
     className = "",
     defaultRating = 0,
 }) {
-    // const textStyle = {
-    //     lineHeight: "1",
-    //     margin: "0",
-    //     color: color,
-    //     fontSize: `${36 / 1.5}px`,
-    // };
+    const textStyle = {
+        lineHeight: "1",
+        margin: "0",
+        color: color,
+        fontSize: `${size / 1.5}px`,
+    };
     const [rating, setRating] = useState(defaultRating);
     const [tempRating, setTempRating] = useState(0);
     function handleRating(rate) {
@@ -59,7 +59,7 @@ export default function StarRating({
                     );
                 })}
             </div>
-            {/* <p style={textStyle}>{rating && rating}</p> */}
+            <p style={textStyle}>{rating && rating}</p>
         </div>
     );
 }

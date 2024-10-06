@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function Box({ children }) {
+export function MoviesContainer({ children }) {
     const [isOpen, setIsOpen] = useState(true);
 
     return (
@@ -25,19 +25,37 @@ export function MoviesList({ movies, onSelect }) {
         </ul>
     );
 }
-export function WatchedMoviesList({ watchedMovies }) {
+function MovieItem({ movie = {}, onSelect = () => {} }) {
+    return (
+        <li key={movie.imdbID} onClick={() => onSelect(movie.imdbID)}>
+            <img src={movie.Poster} alt={`${movie.Title} poster`} />
+            <h3>{movie.Title}</h3>
+            <div>
+                <p>
+                    <span>🗓</span>
+                    <span>{movie.Year}</span>
+                </p>
+            </div>
+        </li>
+    );
+}
+export function WatchedMoviesList({ watchedMovies, onDelete }) {
     return (
         <>
             <Statistics watched={watchedMovies} />
             <ul className="list">
                 {watchedMovies.map((movie) => (
-                    <WatchedMovieItem movie={movie} key={movie.imdbID} />
+                    <WatchedMovieItem
+                        movie={movie}
+                        key={movie.imdbID}
+                        onDelete={onDelete}
+                    />
                 ))}
             </ul>
         </>
     );
 }
-function WatchedMovieItem({ movie }) {
+function WatchedMovieItem({ movie, onDelete }) {
     return (
         <li key={movie.imdbID}>
             <img src={movie.Poster} alt={`${movie.Title} poster`} />
@@ -55,6 +73,12 @@ function WatchedMovieItem({ movie }) {
                     <span>⏳</span>
                     <span>{movie.runtime} min</span>
                 </p>
+                <button
+                    className="btn-delete"
+                    onClick={() => onDelete(movie.imdbID)}
+                >
+                    X
+                </button>
             </div>
         </li>
     );
@@ -73,32 +97,18 @@ export function Statistics({ watched }) {
                 </p>
                 <p>
                     <span>⭐️</span>
-                    <span>{avgImdbRating}</span>
+                    <span>{avgImdbRating.toFixed(2)}</span>
                 </p>
                 <p>
                     <span>🌟</span>
-                    <span>{avgUserRating}</span>
+                    <span>{avgUserRating.toFixed(2)}</span>
                 </p>
                 <p>
                     <span>⏳</span>
-                    <span>{avgRuntime} min</span>
+                    <span>{avgRuntime.toFixed(1)} min</span>
                 </p>
             </div>
         </div>
-    );
-}
-function MovieItem({ movie = {}, onSelect = () => {} }) {
-    return (
-        <li key={movie.imdbID} onClick={() => onSelect(movie.imdbID)}>
-            <img src={movie.Poster} alt={`${movie.Title} poster`} />
-            <h3>{movie.Title}</h3>
-            <div>
-                <p>
-                    <span>🗓</span>
-                    <span>{movie.Year}</span>
-                </p>
-            </div>
-        </li>
     );
 }
 function ButtonToggle({ onClick, children }) {

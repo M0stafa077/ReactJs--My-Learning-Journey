@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Navbar, Logo, SearchBox, NumResult } from "./Navbar";
-import { Box, MoviesList, WatchedMoviesList } from "./MovieBox";
+import { MoviesContainer, MoviesList, WatchedMoviesList } from "./MovieBox";
+import MovieDetails from "./MovieDetails";
 
-const apiURL = `https://www.omdbapi.com/?i=tt3896198&apikey=47c6b691&s=`;
+const searchApiURL = `https://www.omdbapi.com/?i=tt3896198&apikey=47c6b691&s=`;
 
 export default function App() {
     const [movies, setMovies] = useState([]);
@@ -12,15 +13,23 @@ export default function App() {
     const [error, setError] = useState("");
     const [selectedMovie, setSelectedMovie] = useState(null);
     useEffect(() => {
+        const controller = new AbortController();
+
         async function fetchMovies() {
             try {
                 setIsLoading(true);
-                const res = await fetch(apiURL + query);
+                const res = await fetch(searchApiURL + query, {
+                    signal: controller.signal,
+                });
                 const data = await res.json();
                 if (data.Response === "False")
                     throw new Error("Movie not found!");
+
                 setMovies(data.Search ? data.Search : []);
             } catch (err) {
+                if (err.message === "signal is aborted without reason") {
+                    return;
+                }
                 setError(
                     err.message === "Failed to fetch"
                         ? "Something went wrong"
@@ -30,8 +39,24 @@ export default function App() {
                 setIsLoading(false);
             }
         }
+
         fetchMovies();
+
+        return () => {
+            controller.abort();
+        };
     }, [query]);
+
+    useEffect(() => {
+        function eventCallback(e) {
+            if (e.key === "/") {
+                e.preventDefault();
+                document.getElementById("searchBox").focus();
+            }
+        }
+        document.addEventListener("keydown", eventCallback);
+        return () => document.removeEventListener("keydown", eventCallback);
+    }, []);
     function handleSearch(query) {
         setQuery(query);
         setError("");
@@ -42,6 +67,14 @@ export default function App() {
     function handleClose() {
         setSelectedMovie(null);
     }
+    function handleAddWatchedMovie(movie) {
+        setWatched((watched) => [...watched, movie]);
+    }
+    function handleDeleteWatchedMovie(movieId) {
+        setWatched((watched) =>
+            watched.filter((movie) => movie.imdbID !== movieId)
+        );
+    }
     return (
         <>
             <Navbar movies={movies}>
@@ -50,8 +83,8 @@ export default function App() {
                 <NumResult movies={movies} />
             </Navbar>
             <Main>
-                <Box>
-                    {isLoading && <p className="loader">Loading...</p>}
+                <MoviesContainer>
+                    {isLoading && <Loader />}
                     {!isLoading && !error && (
                         <MoviesList
                             movies={movies}
@@ -62,33 +95,29 @@ export default function App() {
                     {!query && (
                         <p className="loader">Start searching for movies </p>
                     )}
-                </Box>
-
-                <Box>
+                </MoviesContainer>
+                <MoviesContainer>
                     {selectedMovie ? (
                         <MovieDetails
                             movieId={selectedMovie}
                             onClose={handleClose}
+                            onAddMovie={handleAddWatchedMovie}
+                            watched={watched}
                         />
                     ) : (
-                        <WatchedMoviesList watchedMovies={watched} />
+                        <WatchedMoviesList
+                            watchedMovies={watched}
+                            onDelete={handleDeleteWatchedMovie}
+                        />
                     )}
-                </Box>
+                </MoviesContainer>
             </Main>
         </>
     );
 }
-function MovieDetails({ movieId, onClose = () => {} }) {
-    return (
-        <div className="details">
-            <button className="btn-back" onClick={onClose}>
-                &larr;
-            </button>
-            <h1 className="header">MOVIE</h1>
-        </div>
-    );
-}
-
 function Main({ children }) {
     return <main className="main">{children}</main>;
+}
+export function Loader() {
+    return <p className="loader">Loading...</p>;
 }

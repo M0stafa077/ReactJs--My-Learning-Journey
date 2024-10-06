@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export function Logo() {
     return (
         <div className="logo">
@@ -9,11 +7,11 @@ export function Logo() {
     );
 }
 export function SearchBox({ query = "", onSerach = () => {} }) {
-    // const [query, setQuery] = useState("");
     try {
         return (
             <input
                 className="search"
+                id="searchBox"
                 type="text"
                 placeholder="Search movies..."
                 value={query}
