@@ -7,56 +7,13 @@ const searchApiURL = `https://www.omdbapi.com/?i=tt3896198&apikey=47c6b691&s=`;
 
 export default function App() {
     const [movies, setMovies] = useState([]);
-    const [watched, setWatched] = useState([]);
+    const [watched, setWatched] = useState(() => {
+        return JSON.parse(localStorage.getItem("watched"));
+    });
     const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [selectedMovie, setSelectedMovie] = useState(null);
-    useEffect(() => {
-        const controller = new AbortController();
-
-        async function fetchMovies() {
-            try {
-                setIsLoading(true);
-                const res = await fetch(searchApiURL + query, {
-                    signal: controller.signal,
-                });
-                const data = await res.json();
-                if (data.Response === "False")
-                    throw new Error("Movie not found!");
-
-                setMovies(data.Search ? data.Search : []);
-            } catch (err) {
-                if (err.message === "signal is aborted without reason") {
-                    return;
-                }
-                setError(
-                    err.message === "Failed to fetch"
-                        ? "Something went wrong"
-                        : err.message
-                );
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        fetchMovies();
-
-        return () => {
-            controller.abort();
-        };
-    }, [query]);
-
-    useEffect(() => {
-        function eventCallback(e) {
-            if (e.key === "/") {
-                e.preventDefault();
-                document.getElementById("searchBox").focus();
-            }
-        }
-        document.addEventListener("keydown", eventCallback);
-        return () => document.removeEventListener("keydown", eventCallback);
-    }, []);
     function handleSearch(query) {
         setQuery(query);
         setError("");
@@ -75,6 +32,40 @@ export default function App() {
             watched.filter((movie) => movie.imdbID !== movieId)
         );
     }
+    useEffect(() => {
+        localStorage.setItem("watched", JSON.stringify(watched));
+    }, [watched]);
+    useEffect(() => {
+        const controller = new AbortController();
+        async function fetchMovies() {
+            try {
+                setIsLoading(true);
+                const res = await fetch(searchApiURL + query, {
+                    signal: controller.signal,
+                });
+                const data = await res.json();
+                if (data.Response === "False")
+                    throw new Error("Movie not found!");
+                setMovies(data.Search ? data.Search : []);
+            } catch (err) {
+                if (err.message === "signal is aborted without reason") {
+                    return;
+                }
+                setError(
+                    err.message === "Failed to fetch"
+                        ? "Something went wrong"
+                        : err.message
+                );
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchMovies();
+        return () => {
+            controller.abort();
+        };
+    }, [query]);
+
     return (
         <>
             <Navbar movies={movies}>
