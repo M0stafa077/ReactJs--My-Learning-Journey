@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import StarRating from "./StarRating";
 import { Loader } from "./App";
+import { useKey } from "../customHooks/useKey";
 
 const detailsApiURL = `https://www.omdbapi.com/?apikey=47c6b691&i=`;
 
@@ -31,17 +32,7 @@ export default function MovieDetails({
             document.title = "Popcorn";
         };
     }, [movie]);
-    useEffect(() => {
-        function eventCallback(e) {
-            if (e.code === "Escape") {
-                onClose();
-            }
-        }
-        document.addEventListener("keydown", eventCallback);
-        return () => {
-            document.removeEventListener("keydown", eventCallback);
-        };
-    }, [onClose]);
+    useKey("Escape", onClose);
     function handleAdd() {
         const newWatchedMovie = {
             imdbID: movieId,

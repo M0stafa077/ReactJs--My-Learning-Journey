@@ -1,3 +1,6 @@
+import { useRef } from "react";
+import { useKey } from "../customHooks/useKey";
+
 export function Logo() {
     return (
         <div className="logo">
@@ -7,6 +10,8 @@ export function Logo() {
     );
 }
 export function SearchBox({ query = "", onSerach = () => {} }) {
+    const searchRef = useRef(null);
+    useKey("/", () => searchRef.current.focus());
     try {
         return (
             <input
@@ -16,6 +21,7 @@ export function SearchBox({ query = "", onSerach = () => {} }) {
                 placeholder="Search movies..."
                 value={query}
                 onChange={(e) => onSerach(e.target.value)}
+                ref={searchRef}
             />
         );
     } catch (err) {
