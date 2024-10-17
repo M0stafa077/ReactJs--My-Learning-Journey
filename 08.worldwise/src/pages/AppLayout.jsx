@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { useAuth } from "../contexts/authenticationContext";
 import styles from "./AppLayout.module.css";
 import { useEffect } from "react";
+import User from "../components/User";
 
 export default function AppLayout() {
     const { isAuthenticated } = useAuth();
@@ -16,6 +17,7 @@ export default function AppLayout() {
         <div className={styles.app}>
             <Sidebar />
             <Map />
+            <User />
         </div>
     );
 }
