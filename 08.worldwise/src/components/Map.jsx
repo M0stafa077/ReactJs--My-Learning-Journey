@@ -13,7 +13,21 @@ import { useCities } from "../contexts/CitiesContext";
 import { useEffect, useState } from "react";
 import { useGeolocation } from "../hooks/useGeolocation";
 import Button from "./Button";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
+const RED_MARKER_ICON_URL =
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png";
+const redIcon = L.icon({
+    iconUrl: RED_MARKER_ICON_URL,
+    iconSize: [25, 41], // size of the icon
+    iconAnchor: [12.5, 41], // point of the icon which will correspond to marker's location
+    popupAnchor: [0, -41], // point from which the popup should open relative to the iconAnchor
+    shadowUrl: iconShadow, // default shadow
+    shadowSize: [41, 41], // size of the shadow
+    shadowAnchor: [12.5, 41], // anchor point of the shadow
+});
 export default function Map() {
     const { cities } = useCities();
     const [mapPosition, setMapPosition] = useState([40, 0]);
@@ -66,6 +80,7 @@ export default function Map() {
                 <ChangeMapCenter position={mapPosition} />
                 {geolocationPosition && (
                     <Marker
+                        icon={redIcon}
                         position={[
                             geolocationPosition.lat,
                             geolocationPosition.lng,
