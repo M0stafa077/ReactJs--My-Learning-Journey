@@ -180,7 +180,6 @@ function Form() {
             </div>
 
             <div className={styles.buttons}>
-                <Button type="primary">Add</Button>
                 <Button
                     type="back"
                     onClick={(e) => {
@@ -190,6 +189,7 @@ function Form() {
                 >
                     &larr; Back
                 </Button>
+                <Button type="primary">Add</Button>
             </div>
         </form>
     );
