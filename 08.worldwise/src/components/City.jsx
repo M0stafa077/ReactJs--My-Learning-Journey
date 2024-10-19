@@ -5,8 +5,6 @@ import { useEffect } from "react";
 import Button from "./Button";
 import Spinner from "./Spinner";
 
-const url = "http://localhost:5000";
-
 const formatDate = (date) =>
     new Intl.DateTimeFormat("en", {
         day: "numeric",
@@ -22,7 +20,7 @@ function City() {
 
     useEffect(() => {
         getCity(id);
-    }, [id]);
+    }, [id, getCity]);
 
     const { cityName, emoji, date, notes } = currentCity;
 
