@@ -1,6 +1,17 @@
-import { Link } from "react-router-dom";
+import { Button as ClearButton } from "@mui/material";
+import LinkButton from "../../ui/LinkButton";
+import Button from "../../ui/Button";
+import CartItem from "./CartItem";
 
-const fakeCart = [
+export interface CartItemI {
+    pizzaId: number;
+    name: string;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+}
+
+const fakeCart: CartItemI[] = [
     {
         pizzaId: 12,
         name: "Mediterranean",
@@ -28,14 +39,26 @@ function Cart() {
     const cart = fakeCart;
 
     return (
-        <div>
-            <Link to="/menu">&larr; Back to menu</Link>
+        <div className="px-4 py-3">
+            <LinkButton to="/menu">&larr; Back to menu</LinkButton>
 
-            <h2>Your cart, %NAME%</h2>
+            <h2 className="mt-7 text-xl font-semibold">Your cart, %NAME%</h2>
 
-            <div>
-                <Link to="/order/new">Order pizzas</Link>
-                <button>Clear cart</button>
+            <ul className="mt-3 divide-y divide-stone-200 border-b">
+                {cart.map((el) => (
+                    <CartItem item={el} key={el.pizzaId} />
+                ))}
+            </ul>
+
+            <div className="mt-6 space-x-3">
+                <Button to="/order/new">Order pizzas</Button>
+                <ClearButton
+                    className="rounded-full"
+                    variant="outlined"
+                    color="error"
+                >
+                    Clear cart
+                </ClearButton>
             </div>
         </div>
     );

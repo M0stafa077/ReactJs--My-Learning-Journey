@@ -3,7 +3,7 @@ import { createOrder } from "../../../services/apiRestaurant";
 
 const isValidPhone = (str: string) =>
     /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
-        str
+        str,
     );
 
 export async function createOrderAction({ request }: { request: Request }) {
@@ -22,5 +22,6 @@ export async function createOrderAction({ request }: { request: Request }) {
 
     const createdOrderInfo = await createOrder(order);
 
-    return redirect(`/order/${createdOrderInfo.id}`);
+    // return redirect(`/order/${createdOrderInfo.id}`);
+    return null;
 }

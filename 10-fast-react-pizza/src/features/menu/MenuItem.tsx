@@ -1,3 +1,4 @@
+import Button, { ButtonTypes } from "../../ui/Button";
 import { formatCurrency } from "../../utils/helpers";
 import { MenuItemInterface } from "./interfaces/menuItem.interface";
 
@@ -5,16 +6,27 @@ function MenuItem({ pizza }: { pizza: MenuItemInterface }) {
     const { name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
 
     return (
-        <li>
-            <img src={imageUrl} alt={name} />
-            <div>
-                <p>{name}</p>
-                <p>{ingredients.join(", ")}</p>
-                <div>
+        <li className="flex gap-x-4 py-2">
+            <img
+                src={imageUrl}
+                alt={name}
+                className={`h-24 ${soldOut ? "opacity-70 grayscale" : ""}`}
+            />
+            <div className="flex flex-grow flex-col pt-0.5">
+                <p className="font-medium">{name}</p>
+                <p className="text-sm capitalize italic">
+                    {ingredients.join(", ")}
+                </p>
+                <div className="items:center mt-auto flex justify-between">
                     {!soldOut ? (
-                        <p>{formatCurrency(unitPrice)}</p>
+                        <p className="text-sm">{formatCurrency(unitPrice)}</p>
                     ) : (
-                        <p>Sold out</p>
+                        <p className="text-sm font-medium uppercase text-stone-500">
+                            Sold out
+                        </p>
+                    )}
+                    {!soldOut && (
+                        <Button type={ButtonTypes.SMALL}>Add to cart</Button>
                     )}
                 </div>
             </div>

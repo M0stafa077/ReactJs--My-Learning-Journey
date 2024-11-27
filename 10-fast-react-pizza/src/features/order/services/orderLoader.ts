@@ -1,4 +1,4 @@
-import { getOrder } from "../../services/apiRestaurant";
+import { getOrder } from "../../../services/apiRestaurant";
 
 interface paramsI {
     params: any;
